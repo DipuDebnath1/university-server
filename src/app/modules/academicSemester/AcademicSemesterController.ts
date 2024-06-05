@@ -16,7 +16,7 @@ const createAcademicSemester = catchAsync(async(req, res) =>{
     })
 })
 
-const getAllSemesterDB = catchAsync(async(req, res) =>{
+const getAllSemester = catchAsync(async(req, res) =>{
 
     const result = await AcademicSemesterServices.GetAllSemesterDB()
 
@@ -27,7 +27,7 @@ const getAllSemesterDB = catchAsync(async(req, res) =>{
         data: result
     })
 })
-const getSingleSemesterDB = catchAsync(async(req, res) =>{
+const getSingleSemester = catchAsync(async(req, res) =>{
     const {semesterId} = req.params 
     const result = await AcademicSemesterServices.GetSingleSemesterDB(semesterId)
 
@@ -38,9 +38,10 @@ const getSingleSemesterDB = catchAsync(async(req, res) =>{
         data: result
     })
 })
-const UpdateSemesterDB = catchAsync(async(req, res) =>{
+const UpdateSemester = catchAsync(async(req, res) =>{
     const {semesterId} = req.params 
     const semester = req.body 
+
     const result = await AcademicSemesterServices.updateSemesterDB(semesterId, semester)
 
     sendResponse(res,{
@@ -53,7 +54,7 @@ const UpdateSemesterDB = catchAsync(async(req, res) =>{
 
 export const AcademicSemesterControllers = {
     createAcademicSemester,
-    getAllSemesterDB,
-    getSingleSemesterDB,
-    UpdateSemesterDB
+    getAllSemester,
+    getSingleSemester,
+    UpdateSemester
 }
