@@ -83,14 +83,48 @@ const studentSchema = new Schema<TStudent>({
   bloodGroup: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
   presentAddress: { type: String, required: true },
   permanentAddress: { type: String, required: true },
-  guardian: guardianSchema,
-  localGuardian: localGuardianSchema,
+  guardian: {type:guardianSchema,  required: [true, 'Guardian information is required']},
+  localGuardian: {type:localGuardianSchema,   required: [true, 'Local guardian information is required'],},
   profileImg: { type: String },
   admissionSemester:{
     type:Schema.Types.ObjectId,
     ref:"AcademicSemester"
   },
+  isDeleted: {
+    type:Boolean,
+    default:false
+},
+  academicDepartment: {
+    type: Schema.Types.ObjectId,
+    ref: 'AcademicDepartment',
+  },
   isActive: ["active", "blocked"],
 });
+
+
+
+
+// Query Middleware
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
+//creating a custom static method
+studentSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await StudentModel.findOne({ id });
+  return existingUser;
+};
+
 
 export const StudentModel = model<TStudent>("Student", studentSchema);
